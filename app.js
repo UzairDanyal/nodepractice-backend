@@ -20,6 +20,7 @@ app.use(
 // Requiring Routes
 
 const UsersRoutes = require('./routes/users.routes');
+const BooksRoutes = require('./routes/books.routes');
 
 // connection to mongoose
 const mongoCon = process.env.mongoCon;
@@ -40,14 +41,17 @@ app.get('/',  function (req, res) {
     message: 'Express backend server'});
 });
 
-app.set('port', (3000));
+//  app.set('port', (3000));
+
+app.set('port', (process.env.PORT));
+
 
 app.use(accessControls);
 app.use(cors());
 
 // Routes which should handle requests
 app.use("/users",UsersRoutes);
-// app.use("/users", userRoutes);
+app.use("/books",BooksRoutes);
 
 app.use(errorHandler);
 

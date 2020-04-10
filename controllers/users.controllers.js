@@ -8,7 +8,8 @@ usersController.getAll = async (req, res) => {
   let users;
   try {
     let merged = {};
-
+    const start = 0;
+    const length = 100;
     users = await Users.paginate(
       merged,
       { password: 0 },
@@ -68,13 +69,21 @@ usersController.registerUser = async (req, res) => {
     });
   } catch (ex) {
     console.log('ex', ex);
-
+    if(ex.code===11000){
+      res
+      .send({
+        message: 'This email has been registered already',
+      })
+      .status(500);
+    }
+    else {
     res
       .send({
         message: 'Error',
         detail: ex
       })
       .status(500);
+  }
   }
 };
 
@@ -105,7 +114,7 @@ usersController.loginUser = async (req, res) => {
             const token = jsonwebtoken.sign({
                data: result,
                role: 'User'
-            }, 'supersecretToken', { expiresIn: '7d' });
+            }, process.env.JWT_KEY, { expiresIn: '7d' });
             
             res.send({ message: 'Successfully Logged in', token: token });
           } 
